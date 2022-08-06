@@ -71,9 +71,9 @@ else
     echo -e ${reset}""${reset}
     echo -e ${ltblue}"INFO: Manifests not found, downloading"${reset}
     echo -e ${reset}""${reset}
-    wget "${manifests_url}/00-remotes.xml" -O "${loc_man}/00-remotes.xml"
-    wget "${manifests_url}/01-removes.xml" -O "${loc_man}/01-removes.xml"
-    wget "${manifests_url}/02-waydroid.xml" -O "${loc_man}/02-waydroid.xml"
+    curl "${manifests_url}/00-remotes.xml" -o "${loc_man}/00-remotes.xml"
+    curl "${manifests_url}/01-removes.xml" -o "${loc_man}/01-removes.xml"
+    curl "${manifests_url}/02-waydroid.xml" -o "${loc_man}/02-waydroid.xml"
 fi
 
 echo -e ${reset}""${reset}
