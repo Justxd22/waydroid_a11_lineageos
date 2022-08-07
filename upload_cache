@@ -1,0 +1,16 @@
+cd /tmp
+
+date=`date +%Y%m%d`
+
+comp () 
+{ 
+    tar --use-compress-program="pigz -k -$2 " -cf $1.tar.gz ccache
+}
+
+time comp ccache-example 1 # Compression level 1, its enough
+
+up(){
+	curl bashupload.com -T $1
+}
+
+up ccache-example.tar.gz
