@@ -1,0 +1,15 @@
+up(){
+	curl --upload-file $1 https://transfer.sh/
+}
+
+
+make_rom(){
+    make systemimage -j$(nproc --all)
+    make vendorimage -j$(nproc --all)
+	zip=$(up out/target/product/generic/*.img) 
+	echo " "
+	echo "$zip"
+}
+
+make_rom &
+sleep 4500 && kill "$!"
