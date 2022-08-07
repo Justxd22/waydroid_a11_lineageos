@@ -16,18 +16,10 @@ task:
     - sudo apt-get update
     - sudo apt-get install -yq neofetch wget
     - neofetch
-    - mkdir /home/cirrus/ccache
-    - mkdir /home/cirrus/roms
+    - mkdir -p /tmp/rom
 
   sync_script:
-    - export CCACHE_DIR=~/ccache/
-    - export CCACHE_EXEC=$(which ccache)
-    - export USE_CCACHE=1
-    - ccache -M 8G
-    - ccache -z
-    - cd /home/cirrus/roms
-    - mkdir lineage
-    - cd lineage
+    - cd /tmp/rom
     - git config --global user.email "xdjust18@gmail.com"
     - git config --global user.name "justxd22"
     - git config --global color.ui true
@@ -37,20 +29,30 @@ task:
     - ls -la
 
   build_script:
-    - cd /home/cirrus/roms/lineage
+    - cd /tmp/rom
+    - rm -rf .repo
     - source build/envsetup.sh
     - apply-waydroid-patches
     - lunch lineage_waydroid_arm64-userdebug
     - export TZ=Asia/Riyadh
-    - make systemimage -j$(nproc --all)
-    - make vendorimage -j$(nproc --all)
+    - export CCACHE_DIR=/tmp/ccache
+    - export CCACHE_EXEC=$(which ccache)
+    - export USE_CCACHE=1
+    - ccache -M 20G
+    - ccache -o compression=true
+    - ccache -z
+    - wget https://raw.githubusercontent.com/Justxd22/waydroid_a11_lineageos/main/build_line_cache
+    - bash build_line_cache
     - ls -la $OUT_DIR
     - ls -la
     - echo $OUT_DIR
 
   rclone_script:
-    - cd out
-    - mkdir -p ~/.config/rclone/
-    - echo "$RCLONE" | base64 -d > ~/.config/rclone/rclone.conf
-    - rclone copy -v out/system.img drive:waydroid/18.1/"$(date +'%d-%m-%Y:%H:%M')"/
-    - rclone copy -v out/vendor.img drive:waydroid/18.1/"$(date +'%d-%m-%Y:%H:%M')"/
+#    -cd out
+#    - mkdir -p ~/.config/rclone/
+#    - echo "$RCLONE" | base64 -d > ~/.config/rclone/rclone.conf
+#    - rclone copy -v out/system.img drive:waydroid/18.1/"$(date +'%d-%m-%Y:%H:%M')"/
+#    - rclone copy -v out/vendor.img drive:waydroid/18.1/"$(date +'%d-%m-%Y:%H:%M')"/
+    - cd /tmp
+    - wget https://raw.githubusercontent.com/Justxd22/waydroid_a11_lineageos/main/up_cache
+    - bash build_line_cache 
